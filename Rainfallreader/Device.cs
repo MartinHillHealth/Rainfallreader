@@ -40,6 +40,24 @@ namespace RainfallReader
             return total / rainFallEvents.Count;
         }
 
+        public bool CalculateTrend(DateTime currentTime)
+        {
+            List<int> recentFalls = new List<int>();
+
+            foreach (RainFall rainfall in rainFallEvents)
+            {
+
+                if (rainfall.Time < currentTime.AddHours(-4))
+                {
+                    continue;
+                }
+
+                recentFalls.Add(rainfall.Rainfall);
+            }
+
+            return recentFalls.Last() > recentFalls[0];
+        }
+
         // Read rainfall data from the CSV files.
         public DateTime ReadRainfall(string folderPath)
         {
