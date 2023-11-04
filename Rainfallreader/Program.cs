@@ -27,11 +27,6 @@ namespace RainfallReader
             // Parse datafiles into usable objects.
             List<Device> devices = Device.ReadDevices();
 
-            foreach (Device device in devices)
-            {
-                Console.WriteLine(device.DeviceName);
-            }
-
             ReadRainfall(devices);
 
             Report(devices);
@@ -72,6 +67,10 @@ namespace RainfallReader
 
                 Console.WriteLine("Average rainfall over the last 4 hours: " + average );
                 Console.WriteLine("This is a code " + code);
+
+                Console.WriteLine();
+                Console.WriteLine("-----");
+                Console.WriteLine();
             }
         }
     }
