@@ -10,26 +10,20 @@
 
         public string Id
         {
-            get
-            {
-                return id;
-            }
+            get;
+            set;
         }
 
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get;
+            set;
         }
 
         public string Location
         {
-            get
-            {
-                return location;
-            }
+            get;
+            set;
         }
 
         public Device(string id, string name, string location)
