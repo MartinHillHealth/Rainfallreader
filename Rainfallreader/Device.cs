@@ -33,38 +33,16 @@ namespace RainfallReader
             set;
         }
 
-        public void PrintRainfall()
+        public float GetAverage()
         {
-            Console.WriteLine("Device: " + DeviceName);
-            Console.WriteLine("Location: " + location);
-            rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
+            int total = 0;
+
+            rainFallEvents.ForEach(rainfall => total += rainfall.Rainfall);
+
+            return total / rainFallEvents.Count;
         }
 
-        public static List<Device> ReadDevices()
-        {
-            using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
-            using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                List<Device> devices = new List<Device>();
-
-                csvReader.Read();
-                csvReader.ReadHeader();
-
-                while (csvReader.Read())
-                {
-                    devices.Add(new Device
-                    {
-                        DeviceID = csvReader.GetField<string>("Device ID"),
-                        DeviceName = csvReader.GetField<string>("Device Name"),
-                        Location = csvReader.GetField<string>("Location")
-                    });
-                }
-
-                return devices;
-            }
-        }
-
-        public void ReadRainfall()
+        public DateTime ReadRainfall()
         {
             string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
 
@@ -93,6 +71,11 @@ namespace RainfallReader
                             continue;
                         }
 
+                        if (lastDateTime < csvReader.GetField<DateTime>("Time"))
+                        {
+                            lastDateTime = csvReader.GetField<DateTime>("Time");
+                        }
+
                         rainFallEvents.Add(new RainFall
                         {
                             DeviceId = DeviceID,
@@ -102,6 +85,58 @@ namespace RainfallReader
                     }
                 }
             }
+
+            return lastDateTime;
+        }
+
+        public bool EmergencyCode(DateTime currentDateTime)
+        {
+            foreach (RainFall rain in rainFallEvents)
+            {
+                if (rain.Time > currentDateTime.AddHours(-4) && rain.Rainfall > 30)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static List<Device> ReadDevices()
+        {
+            using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
+            using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                List<Device> devices = new List<Device>();
+
+                csvReader.Read();
+                csvReader.ReadHeader();
+
+                while (csvReader.Read())
+                {
+                    devices.Add(new Device
+                    {
+                        DeviceID = csvReader.GetField<string>("Device ID"),
+                        DeviceName = csvReader.GetField<string>("Device Name"),
+                        Location = csvReader.GetField<string>("Location")
+                    });
+                }
+
+                return devices;
+            }
+        }
+
+        public static string GetCode(float average)
+        {
+            if (average < 10)
+            {
+                return "Green";
+            }
+
+            if (average < 15)
+            {
+                return "Yellow";
+            }
+
+            return "Red";
         }
     }
 }
