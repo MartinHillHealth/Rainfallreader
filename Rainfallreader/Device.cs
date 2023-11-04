@@ -3,16 +3,9 @@ using System.Globalization;
 
 namespace RainfallReader
 {
-    using Rainfallreader;
-
+    // Tracks a given device at a given location and rainfall associated with it.
     internal class Device
     {
-        private string deviceID;
-
-        private string deviceName;
-
-        private string location;
-
         private List<RainFall> rainFallEvents;
 
         public string DeviceID
@@ -33,26 +26,35 @@ namespace RainfallReader
             set;
         }
 
-        public float GetAverage()
+        // Get the average rainfall over the last 4 hours.
+        public float GetAverage(DateTime currentTime)
         {
             int total = 0;
 
-            rainFallEvents.ForEach(rainfall => total += rainfall.Rainfall);
+            rainFallEvents.ForEach(rainfall =>
+            {
+                if(rainfall.Time >= currentTime.AddHours(-4))
+                    total += rainfall.Rainfall;
+            });
 
             return total / rainFallEvents.Count;
         }
 
+        // Read rainfall data from the CSV files.
         public DateTime ReadRainfall()
         {
             string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
 
+            // Empty any existing data and initialise.
             rainFallEvents = new List<RainFall>();
 
             DateTime lastDateTime = DateTime.MinValue;
 
+            // parse all files in the given folder;
             foreach (string path in files)
             {
-                if (!path.ToLower().Contains("data") || !path.ToLower().EndsWith("csv") || path.ToLower().Contains("devices"))
+                // Skip non-csv files.
+                if (!path.ToLower().EndsWith("csv"))
                 {
                     continue;
                 }
@@ -62,6 +64,22 @@ namespace RainfallReader
                 {
                     csvReader.Read();
                     csvReader.ReadHeader();
+
+                    bool skipFile = false;
+
+                    // Check the headers are correct
+                    foreach (string header in csvReader.HeaderRecord)
+                    {
+                        if (header != "Device ID" && header != "Rainfall" && header != "Time")
+                        {
+                            skipFile = true;
+                        }
+                    }
+
+                    if (skipFile)
+                    {
+                        continue;
+                    }
 
                     while (csvReader.Read())
                     {
@@ -78,7 +96,6 @@ namespace RainfallReader
 
                         rainFallEvents.Add(new RainFall
                         {
-                            DeviceId = DeviceID,
                             Rainfall = csvReader.GetField<int>("Rainfall"),
                             Time = csvReader.GetField<DateTime>("Time")
                         });
@@ -89,6 +106,7 @@ namespace RainfallReader
             return lastDateTime;
         }
 
+        // Checks if there has been a rainfall even over 30 mm in the last 4 hours.
         public bool EmergencyCode(DateTime currentDateTime)
         {
             foreach (RainFall rain in rainFallEvents)
@@ -100,6 +118,7 @@ namespace RainfallReader
             return false;
         }
 
+        // Read device data from CSV file.
         public static List<Device> ReadDevices()
         {
             using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
@@ -124,6 +143,7 @@ namespace RainfallReader
             }
         }
 
+        // Gets the appropriate code for the given average.
         public static string GetCode(float average)
         {
             if (average < 10)

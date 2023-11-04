@@ -1,22 +1,8 @@
-﻿namespace Rainfallreader
+﻿namespace RainfallReader
 {
-    using System.Globalization;
-
+    // Container class for rainfall at a given time.
     internal class RainFall
     {
-
-        private string deviceId;
-
-        private DateTime time;
-
-        private int rainfall;
-
-        public string DeviceId
-        {
-            get;
-            set;
-        }
-
         public DateTime Time
         {
             get;
