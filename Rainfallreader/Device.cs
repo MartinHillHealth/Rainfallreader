@@ -1,10 +1,10 @@
 ﻿using CsvHelper;
 using System.Globalization;
-using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RainfallReader
 {
+    using Rainfallreader;
+
     internal class Device
     {
         private string deviceID;
@@ -12,6 +12,8 @@ namespace RainfallReader
         private string deviceName;
 
         private string location;
+
+        private List<RainFall> rainFallEvents;
 
         public string DeviceID
         {
@@ -29,6 +31,13 @@ namespace RainfallReader
         {
             get;
             set;
+        }
+
+        public void PrintRainfall()
+        {
+            Console.WriteLine("Device: " + DeviceName);
+            Console.WriteLine("Location: " + location);
+            rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
         }
 
         public static List<Device> ReadDevices()
@@ -52,6 +61,46 @@ namespace RainfallReader
                 }
 
                 return devices;
+            }
+        }
+
+        public void ReadRainfall()
+        {
+            string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
+
+            rainFallEvents = new List<RainFall>();
+
+            DateTime lastDateTime = DateTime.MinValue;
+
+            foreach (string path in files)
+            {
+                if (!path.ToLower().Contains("data") || !path.ToLower().EndsWith("csv") || path.ToLower().Contains("devices"))
+                {
+                    continue;
+                }
+
+                using StreamReader reader = new StreamReader(path);
+                using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                {
+                    csvReader.Read();
+                    csvReader.ReadHeader();
+
+                    while (csvReader.Read())
+                    {
+                        // If for another reader.
+                        if (csvReader.GetField<string>("Device ID") != DeviceID)
+                        {
+                            continue;
+                        }
+
+                        rainFallEvents.Add(new RainFall
+                        {
+                            DeviceId = DeviceID,
+                            Rainfall = csvReader.GetField<int>("Rainfall"),
+                            Time = csvReader.GetField<DateTime>("Time")
+                        });
+                    }
+                }
             }
         }
     }
