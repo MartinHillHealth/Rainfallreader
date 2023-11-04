@@ -35,6 +35,8 @@ namespace RainfallReader
 
         public void PrintRainfall()
         {
+            Console.WriteLine("Device: " + DeviceName);
+            Console.WriteLine("Location: " + location);
             rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
         }
 
@@ -64,7 +66,7 @@ namespace RainfallReader
 
         public void ReadRainfall()
         {
-            string[] files = Directory.GetFiles(@"\datafiles");
+            string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
 
             rainFallEvents = new List<RainFall>();
 
@@ -72,7 +74,7 @@ namespace RainfallReader
 
             foreach (string path in files)
             {
-                if (!path.Contains("data") || !path.EndsWith("csv"))
+                if (!path.ToLower().Contains("data") || !path.ToLower().EndsWith("csv") || path.ToLower().Contains("devices"))
                 {
                     continue;
                 }
