@@ -33,13 +33,6 @@ namespace RainfallReader
             set;
         }
 
-        public void PrintRainfall()
-        {
-            Console.WriteLine("Device: " + DeviceName);
-            Console.WriteLine("Location: " + location);
-            rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
-        }
-
         public float GetAverage()
         {
             int total = 0;
