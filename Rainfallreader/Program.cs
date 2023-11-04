@@ -5,11 +5,6 @@
  */
 namespace RainfallReader
 {
-    using System.Globalization;
-
-    using CsvHelper;
-
-
     public class RainfallReader
     {
         public static void Main()
@@ -36,14 +31,31 @@ namespace RainfallReader
             }
 
             ReadRainfall(devices);
+
+            Report(devices);
         }
 
         private static void ReadRainfall(List<Device> devices)
         {
             // Read all the rainfall per device
             devices.ForEach(device => device.ReadRainfall());
+        }
 
-            devices.ForEach(device => device.PrintRainfall());
+        private static void Report(List<Device> devices)
+        {
+            foreach (Device device in devices)
+            {
+                float average = device.GetAverage();
+                string code = Device.GetCode(average);
+
+                Console.WriteLine("Status report for " + device.DeviceName + ":");
+                Console.WriteLine("Location: " + device.Location);
+
+                Console.WriteLine();
+
+                Console.WriteLine("Average rainfall over the last 4 hours: " + average );
+                Console.WriteLine("This is a code " + code);
+            }
         }
     }
 }
