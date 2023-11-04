@@ -67,6 +67,7 @@ namespace RainfallReader
             });
         }
 
+        // Generate a report based on device rainfall events.
         private static void Report()
         {
             foreach (Device device in Devices)
@@ -86,6 +87,7 @@ namespace RainfallReader
 
                 Console.WriteLine("Average rainfall over the last 4 hours: " + average );
 
+                // Colour the output based on code.
                 switch (code)
                 {
                     case "Green":
