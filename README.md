@@ -6,3 +6,7 @@ All potential values have been included in rainfall documents. It is unreasonabl
 
 
 Resources used:
+https://joshclose.github.io/CsvHelper/ - Prebuilt CSV parser, minimalising technical work and using existing known reliable solution for common task.
+www.geeksforgeeks.org - Reference, prompts, and basic problem solving.
+stackoverflow.com - Reference, prompts, and basic problem solving
+learn.microsoft.com - common practices refernces.
