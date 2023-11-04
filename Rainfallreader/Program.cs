@@ -7,6 +7,8 @@ namespace RainfallReader
 {
     public class RainfallReader
     {
+        private static DateTime CurrentTime;
+
         public static void Main()
         {
             Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.3");
@@ -37,8 +39,18 @@ namespace RainfallReader
 
         private static void ReadRainfall(List<Device> devices)
         {
+            CurrentTime = DateTime.MinValue;
+
             // Read all the rainfall per device
-            devices.ForEach(device => device.ReadRainfall());
+            devices.ForEach(device =>
+            {
+                DateTime lastDateTime = device.ReadRainfall();
+
+                if (lastDateTime > CurrentTime)
+                {
+                    CurrentTime = lastDateTime;
+                }
+            });
         }
 
         private static void Report(List<Device> devices)
@@ -47,6 +59,11 @@ namespace RainfallReader
             {
                 float average = device.GetAverage();
                 string code = Device.GetCode(average);
+
+                if (device.EmergencyCode(CurrentTime))
+                {
+                    code = "Red";
+                }
 
                 Console.WriteLine("Status report for " + device.DeviceName + ":");
                 Console.WriteLine("Location: " + device.Location);

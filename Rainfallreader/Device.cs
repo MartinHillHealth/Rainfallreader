@@ -49,7 +49,7 @@ namespace RainfallReader
             return total / rainFallEvents.Count;
         }
 
-        public void ReadRainfall()
+        public DateTime ReadRainfall()
         {
             string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
 
@@ -78,6 +78,11 @@ namespace RainfallReader
                             continue;
                         }
 
+                        if (lastDateTime < csvReader.GetField<DateTime>("Time"))
+                        {
+                            lastDateTime = csvReader.GetField<DateTime>("Time");
+                        }
+
                         rainFallEvents.Add(new RainFall
                         {
                             DeviceId = DeviceID,
@@ -87,7 +92,21 @@ namespace RainfallReader
                     }
                 }
             }
+
+            return lastDateTime;
         }
+
+        public bool EmergencyCode(DateTime currentDateTime)
+        {
+            foreach (RainFall rain in rainFallEvents)
+            {
+                if (rain.Time > currentDateTime.AddHours(-4) && rain.Rainfall > 30)
+                    return true;
+            }
+
+            return false;
+        }
+
         public static List<Device> ReadDevices()
         {
             using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
