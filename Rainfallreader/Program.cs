@@ -123,6 +123,15 @@ namespace RainfallReader
 
                 Console.ResetColor();
 
+                if (device.CalculateTrend(CurrentTime))
+                {
+                    Console.WriteLine("Currently trending upwards");
+                }
+                else
+                {
+                    Console.WriteLine("Currently trending downwards");
+                }
+
                 Console.WriteLine();
                 Console.WriteLine("-----");
                 Console.WriteLine();
