@@ -1,10 +1,10 @@
 ﻿using CsvHelper;
 using System.Globalization;
-using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RainfallReader
 {
+    using Rainfallreader;
+
     internal class Device
     {
         private string deviceID;
@@ -31,6 +31,11 @@ namespace RainfallReader
         {
             get;
             set;
+        }
+
+        public void PrintRainfall()
+        {
+            rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
         }
 
         public static List<Device> ReadDevices()
@@ -63,6 +68,8 @@ namespace RainfallReader
 
             rainFallEvents = new List<RainFall>();
 
+            DateTime lastDateTime = DateTime.MinValue;
+
             foreach (string path in files)
             {
                 if (!path.Contains("data") || !path.EndsWith("csv"))
@@ -73,7 +80,24 @@ namespace RainfallReader
                 using StreamReader reader = new StreamReader(path);
                 using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
                 {
-                    rainFallEvents.Add(new RainFall{});
+                    csvReader.Read();
+                    csvReader.ReadHeader();
+
+                    while (csvReader.Read())
+                    {
+                        // If for another reader.
+                        if (csvReader.GetField<string>("Device ID") != DeviceID)
+                        {
+                            continue;
+                        }
+
+                        rainFallEvents.Add(new RainFall
+                        {
+                            DeviceId = DeviceID,
+                            Rainfall = csvReader.GetField<int>("Rainfall"),
+                            Time = csvReader.GetField<DateTime>("Time")
+                        });
+                    }
                 }
             }
         }

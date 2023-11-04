@@ -42,6 +42,8 @@ namespace RainfallReader
         {
             // Read all the rainfall per device
             devices.ForEach(device => device.ReadRainfall());
+
+            devices.ForEach(device => device.PrintRainfall());
         }
     }
 }
