@@ -9,27 +9,45 @@ namespace RainfallReader
     {
         private static DateTime CurrentTime;
 
+        private static List<Device> Devices;
+
         public static void Main()
         {
             Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.4");
             Console.WriteLine("Please assure datafiles is synced with the latest data before continuing.");
+            string? input;
 
-            Console.WriteLine("Press any continue to begin reading data.");
+            do
+            {
+                Console.WriteLine("Do you wish to load data (\"load\"), or report on loaded data (\"report\")? Enter \"quit\" to exit.");
 
-            // Using ReadKey to wait for user consent.
-            Console.ReadKey();
+                // Using ReadKey to wait for user consent.
+                input = Console.ReadLine();
 
-            ReadAndDisplay();
-        }
+                if (input == "load")
+                {
+                    // Parse datafiles into usable objects.
+                    Devices = Device.ReadDevices();
 
-        public static void ReadAndDisplay()
-        {
-            // Parse datafiles into usable objects.
-            List<Device> devices = Device.ReadDevices();
+                    ReadRainfall(Devices);
+                }
 
-            ReadRainfall(devices);
+                if (input == "report")
+                {
 
-            Report(devices);
+                    if (Devices.Count == 0)
+                    {
+                        Console.WriteLine("No Device values have been loaded. Please load devices first.");
+
+                        continue;
+                    }
+
+                    Report(Devices);
+                }
+            }
+            while (input.ToLower() != "quit");
+
+            Console.WriteLine("Goodbye!");
         }
 
         private static void ReadRainfall(List<Device> devices)
@@ -66,7 +84,30 @@ namespace RainfallReader
                 Console.WriteLine();
 
                 Console.WriteLine("Average rainfall over the last 4 hours: " + average );
+
+                switch (code)
+                {
+                    case "Green":
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+
+                        break;
+
+                    case "Yellow":
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+
+                        break;
+
+                    case "Red":
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+
+                        break;
+                }
+
                 Console.WriteLine("This is a code " + code);
+
+                Console.ResetColor();
 
                 Console.WriteLine();
                 Console.WriteLine("-----");

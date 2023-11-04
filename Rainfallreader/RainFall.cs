@@ -1,7 +1,5 @@
-﻿namespace Rainfallreader
+﻿namespace RainfallReader
 {
-    using System.Globalization;
-
     internal class RainFall
     {
 

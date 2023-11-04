@@ -3,16 +3,8 @@ using System.Globalization;
 
 namespace RainfallReader
 {
-    using Rainfallreader;
-
     internal class Device
     {
-        private string deviceID;
-
-        private string deviceName;
-
-        private string location;
-
         private List<RainFall> rainFallEvents;
 
         public string DeviceID
