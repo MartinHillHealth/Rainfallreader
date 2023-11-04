@@ -103,5 +103,20 @@ namespace RainfallReader
                 }
             }
         }
+
+        public static string GetCode(float average)
+        {
+            if (average < 10)
+            {
+                return "Green";
+            }
+
+            if (average < 15)
+            {
+                return "Yellow";
+            }
+
+            return "Red";
+        }
     }
 }
