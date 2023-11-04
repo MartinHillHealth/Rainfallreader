@@ -41,9 +41,9 @@ namespace RainfallReader
         }
 
         // Read rainfall data from the CSV files.
-        public DateTime ReadRainfall()
+        public DateTime ReadRainfall(string folderPath)
         {
-            string[] files = Directory.GetFiles(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles");
+            string[] files = Directory.GetFiles(folderPath);
 
             // Empty any existing data and initialise.
             rainFallEvents = new List<RainFall>();
@@ -121,7 +121,18 @@ namespace RainfallReader
         // Read device data from CSV file.
         public static List<Device> ReadDevices()
         {
-            using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
+            // Would normally use WinForms for this, but apparently that's not a standard package anymore.
+            Console.WriteLine("What is the path to the location of the device csv data file?");
+            string filePath = Console.ReadLine();
+
+            if (!filePath.EndsWith("csv"))
+            {
+                Console.WriteLine("CSV file not supplied");
+                    
+                return new List<Device>();
+            }
+
+            using (StreamReader reader = new StreamReader(filePath))
             using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 List<Device> devices = new List<Device>();
