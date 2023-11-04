@@ -55,10 +55,21 @@ namespace RainfallReader
         {
             CurrentTime = DateTime.MinValue;
 
+            // Would normally use WinForms for this, but apparently that's not a standard package anymore.
+            Console.WriteLine("What is the directory to the location of the rainfall csv data files?");
+            string folderPath = Console.ReadLine();
+
+            if (!Directory.Exists(folderPath))
+            {
+                Console.WriteLine("Was unable to read given directory.");
+
+                return;
+            }
+
             // Read all the rainfall per device
             Devices.ForEach(device =>
             {
-                DateTime lastDateTime = device.ReadRainfall();
+                DateTime lastDateTime = device.ReadRainfall(folderPath);
 
                 if (lastDateTime > CurrentTime)
                 {
