@@ -40,28 +40,13 @@ namespace RainfallReader
             rainFallEvents.ForEach(rainfall => Console.WriteLine(rainfall.Rainfall));
         }
 
-        public static List<Device> ReadDevices()
+        public float GetAverage()
         {
-            using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
-            using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                List<Device> devices = new List<Device>();
+            int total = 0;
 
-                csvReader.Read();
-                csvReader.ReadHeader();
+            rainFallEvents.ForEach(rainfall => total += rainfall.Rainfall);
 
-                while (csvReader.Read())
-                {
-                    devices.Add(new Device
-                    {
-                        DeviceID = csvReader.GetField<string>("Device ID"),
-                        DeviceName = csvReader.GetField<string>("Device Name"),
-                        Location = csvReader.GetField<string>("Location")
-                    });
-                }
-
-                return devices;
-            }
+            return total / rainFallEvents.Count;
         }
 
         public void ReadRainfall()
@@ -101,6 +86,29 @@ namespace RainfallReader
                         });
                     }
                 }
+            }
+        }
+        public static List<Device> ReadDevices()
+        {
+            using (StreamReader reader = new StreamReader(@"C:\Users\he134252\source\Repos\Rainfallreader\Rainfallreader\datafiles\Devices.csv"))
+            using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                List<Device> devices = new List<Device>();
+
+                csvReader.Read();
+                csvReader.ReadHeader();
+
+                while (csvReader.Read())
+                {
+                    devices.Add(new Device
+                    {
+                        DeviceID = csvReader.GetField<string>("Device ID"),
+                        DeviceName = csvReader.GetField<string>("Device Name"),
+                        Location = csvReader.GetField<string>("Location")
+                    });
+                }
+
+                return devices;
             }
         }
 
