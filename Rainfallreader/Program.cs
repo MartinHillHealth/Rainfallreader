@@ -1,7 +1,7 @@
 ﻿/*
  * Written by Martin Hill for Nov 2023 Coding challenge.
  *
- * CURRENT VERSION: 0.2
+ * CURRENT VERSION: 0.3
  */
 namespace RainfallReader
 {
@@ -14,7 +14,7 @@ namespace RainfallReader
     {
         public static void Main()
         {
-            Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.2");
+            Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.3");
             Console.WriteLine("Please assure datafiles is synced with the latest data before continuing.");
 
             Console.WriteLine("Press any continue to begin reading data.");
