@@ -40,7 +40,8 @@ namespace RainfallReader
 
         private static void ReadRainfall(List<Device> devices)
         {
-
+            // Read all the rainfall per device
+            devices.ForEach(device => device.ReadRainfall());
         }
     }
 }

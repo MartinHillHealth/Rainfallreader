@@ -13,6 +13,8 @@ namespace RainfallReader
 
         private string location;
 
+        private List<RainFall> rainFallEvents;
+
         public string DeviceID
         {
             get;
@@ -52,6 +54,27 @@ namespace RainfallReader
                 }
 
                 return devices;
+            }
+        }
+
+        public void ReadRainfall()
+        {
+            string[] files = Directory.GetFiles(@"\datafiles");
+
+            rainFallEvents = new List<RainFall>();
+
+            foreach (string path in files)
+            {
+                if (!path.Contains("data") || !path.EndsWith("csv"))
+                {
+                    continue;
+                }
+
+                using StreamReader reader = new StreamReader(path);
+                using CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                {
+                    rainFallEvents.Add(new RainFall{});
+                }
             }
         }
     }
