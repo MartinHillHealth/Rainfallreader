@@ -1,7 +1,7 @@
 ﻿/*
  * Written by Martin Hill for Nov 2023 Coding challenge.
  *
- * CURRENT VERSION: 0.4
+ * CURRENT VERSION: 0.5
  */
 namespace RainfallReader
 {
@@ -13,7 +13,7 @@ namespace RainfallReader
 
         public static void Main()
         {
-            Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.4");
+            Console.WriteLine("Welcome to Fuzion Inc. Flood Detection System v0.5");
             Console.WriteLine("Please assure datafiles is synced with the latest data before continuing.");
             string? input;
 
@@ -29,20 +29,20 @@ namespace RainfallReader
                     // Parse datafiles into usable objects.
                     Devices = Device.ReadDevices();
 
-                    ReadRainfall(Devices);
+                    ReadRainfall();
                 }
 
                 if (input == "report")
                 {
-
-                    if (Devices.Count == 0)
+                    // Make sure the user doesn't read an empty list.
+                    if (Devices == null ||Devices.Count == 0)
                     {
                         Console.WriteLine("No Device values have been loaded. Please load devices first.");
 
                         continue;
                     }
 
-                    Report(Devices);
+                    Report();
                 }
             }
             while (input.ToLower() != "quit");
@@ -50,12 +50,13 @@ namespace RainfallReader
             Console.WriteLine("Goodbye!");
         }
 
-        private static void ReadRainfall(List<Device> devices)
+        // Read the rainfall values for all devices.
+        private static void ReadRainfall()
         {
             CurrentTime = DateTime.MinValue;
 
             // Read all the rainfall per device
-            devices.ForEach(device =>
+            Devices.ForEach(device =>
             {
                 DateTime lastDateTime = device.ReadRainfall();
 
@@ -66,11 +67,11 @@ namespace RainfallReader
             });
         }
 
-        private static void Report(List<Device> devices)
+        private static void Report()
         {
-            foreach (Device device in devices)
+            foreach (Device device in Devices)
             {
-                float average = device.GetAverage();
+                float average = device.GetAverage(CurrentTime);
                 string code = Device.GetCode(average);
 
                 if (device.EmergencyCode(CurrentTime))
